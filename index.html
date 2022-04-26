@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Company Directory</title>
+    <meta name="author" content="Emanuele Fumagalli" />
+    <meta name="description" content="Company Directory Project" />
+    <meta name="keywords" content="contact, directory, employees, emanuele fumagalli" />
+
+    <link rel="icon" href="css/favicon.ico" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="libs/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/style.min.css" />
+</head>
+
+<body>
+    <!-- ====== Header ====== -->
+    <header>
+        <nav class="navbar navbar-dark bg-dark">
+            <a class="navbar-brand">Company Directory</a>
+        </nav>
+    </header>
+    <!-- Header End -->
+
+    <!-- ====== Main Section ====== -->
+    <main class="container">
+        <div class="row" id="list">
+            <div class="card" role="tabpanel" aria-labelledby="personnel-tab">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between">
+                        <!-- Search Bar -->
+                        <form>
+                            <div class="input-group">
+                                <input type="text" id="search-bar" onkeyup="navSearch()" class="form-control"
+                                    placeholder="Search" />
+                            </div>
+                        </form>
+                        <!-- Search Bar End -->
+
+                        <!-- Button Group -->
+                        <div class="btn-group ml-3 mr-2" role="group">
+                            <button type="button" id="add-btn" class="btn btn-primary" title="add">
+                                <i class="bi bi-plus-circle-fill"></i>
+                            </button>
+                            <button type="button" id="refresh-btn" class="btn btn-dark" title="refresh">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </button>
+                        </div>
+                        <!-- Button Group End -->
+                    </div>
+                </div>
+                <div class="card-body pt-3">
+                    <h6 class="company-tabs text-center mb-3"></h6>
+                    <div>
+                        <table id="personnel-table" class="table table-striped mb-0">
+                            <tbody></tbody>
+                        </table>
+                        <table id="department-table" class="table table-striped mb-0">
+                            <tbody></tbody>
+                        </table>
+                        <table id="location-table" class="table table-striped mb-0">
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    <div role="group">
+                        <button type="button" id="personnel-btn" class="btn btn-dark active" title="personnel">
+                            <i class="bi bi-person-fill"></i>
+                        </button>
+                        <button type="button" id="department-btn" class="btn btn-dark" title="department">
+                            <i class="bi bi-building"></i>
+                        </button>
+                        <button type="button" id="location-btn" class="btn btn-dark" title="location">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Main Section End -->
+
+    <!-- ====== View Modal ====== -->
+    <div id="view-modal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-title"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h5 class="card-title text-center mt-3 mb-4" id="cardJob"></h5>
+                    <p class="card-text text-center mb-3" id="cardLocation"></p>
+                </div>
+                <div class="modal-footer d-flex justify-content-around"></div>
+            </div>
+        </div>
+    </div>
+    <!-- View Modal End -->
+
+    <!-- ====== Add Modal ====== -->
+    <div id="add-modal" class="modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add <span id="add-type"></span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="add-alert"></div>
+                    <form id="add-form"></form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="add-submit-btn" class="btn btn-primary">
+                        Submit
+                    </button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Add Modal End -->
+
+    <!-- ====== Edit Modal ====== -->
+    <div id="edit-modal" class="modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit <span id="edit-type"></span></h5>
+                    <span id="edit-id" style="display: none"></span>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="edit-alert"></div>
+                    <form id="edit-form"></form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="edit-submit-btn" class="btn btn-primary">
+                        Submit
+                    </button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Edit Modal End -->
+
+    <!-- ====== Delete Modal ====== -->
+    <div id="delete-modal" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete <span id="delete-type"></span></h5>
+                    <span id="delete-id" style="display: none"></span>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="delete-alert" class="modal-body text-center"></div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+    <!-- Delete Modal End -->
+
+    <!-- ====== JS Files ====== -->
+    <div id="preloader"></div>
+    <script src="libs/jquery/jquery-3.5.1.min.js"></script>
+    <script src="libs/bootstrap/js/bootstrap.min.js"></script>
+    <script src="js/script.min.js"></script>
+</body>
+
+</html>
