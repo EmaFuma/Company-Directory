@@ -518,7 +518,7 @@ function deletePersonnel(deleteId) {
     async: true,
     global: false,
     type: "POST",
-    url: "php/deletePersonnelById.php",
+    url: "php/deletePersonnelByID.php",
     dataType: "json",
     data: {
       employeeId: deleteId,
@@ -538,7 +538,7 @@ function deleteDepartment(deleteId) {
     async: true,
     global: false,
     type: "POST",
-    url: "php/deleteDepartmentById.php",
+    url: "php/deleteDepartmentByID.php",
     dataType: "json",
     data: {
       departmentId: deleteId,
@@ -558,7 +558,7 @@ function deleteLocation(deleteId) {
     async: true,
     global: false,
     type: "POST",
-    url: "php/deleteLocationById.php",
+    url: "php/deleteLocationByID.php",
     dataType: "json",
     data: {
       locationId: deleteId,
@@ -824,7 +824,7 @@ function getLocationByDepartmentId(departmentId, selectId) {
     async: false,
     global: false,
     type: "POST",
-    url: "php/getLocationByDepartmentId.php",
+    url: "php/getLocationByDepartmentID.php",
     dataType: "json",
     data: {
       "departmentId": departmentId,

@@ -36,7 +36,13 @@
                             <div class="input-group">
                                 <input type="text" id="search-bar" onkeyup="navSearch()" class="form-control"
                                     placeholder="Search" />
+                                <div class="input-group-append">
+                                    <button type="button" id="search-btn" class="btn btn-dark" title="search">
+                                        <i class="bi bi-search"></i>
+                                    </button>
+                                </div>
                             </div>
+
                         </form>
                         <!-- Search Bar End -->
 
@@ -44,6 +50,9 @@
                         <div class="btn-group ml-3 mr-2" role="group">
                             <button type="button" id="add-btn" class="btn btn-primary" title="add">
                                 <i class="bi bi-plus-circle-fill"></i>
+                            </button>
+                            <button type="button" id="filter-btn" class="btn btn-dark" title="filter">
+                                <i class="bi bi-funnel-fill"></i>
                             </button>
                             <button type="button" id="refresh-btn" class="btn btn-dark" title="refresh">
                                 <i class="bi bi-arrow-clockwise"></i>
