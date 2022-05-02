@@ -19,14 +19,14 @@ function getType() {
 //function to prepare string from searchbar for personnel query:
 function queryPrepare(queryStr) {
   let strArray = queryStr.trim().split(' ');
-  var first = strArray[0];
-  var last = strArray[strArray.length - 1];
+  let first = strArray[0];
+  let last = strArray[strArray.length - 1];
   return [first, last];
 }
 
 //function to prepare string from searchbar for location and department query:
 function queryPrepareDeptLoc(queryStr) {
-  var query = queryStr.trim();
+  let query = queryStr.trim();
   return query;
 }
 
