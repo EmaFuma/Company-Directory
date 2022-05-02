@@ -1,9 +1,6 @@
 <?php
 
-	// example use from browser
-	// http://localhost/companydirectory/libs/php/getAllDepartments.php
-
-	// remove next two lines for production	
+	// remove next two lines for production
 	
 	ini_set('display_errors', 'On');
 	error_reporting(E_ALL);
@@ -32,7 +29,9 @@
 
 	}	
 
-	$query = 'SELECT id, name FROM location';
+	$search = $_REQUEST['search'];
+
+	$query = "SELECT id, name FROM location WHERE name LIKE '$search%' ORDER BY name";
 
 	$result = $conn->query($query);
 	

@@ -34,15 +34,15 @@
                         <!-- Search Bar -->
                         <form>
                             <div class="input-group">
-                                <input type="text" id="search-bar" onkeyup="navSearch()" class="form-control"
-                                    placeholder="Search" />
-                                <div class="input-group-append">
-                                    <button type="button" id="search-btn" class="btn btn-dark" title="search">
-                                        <i class="bi bi-search"></i>
-                                    </button>
+                                <div class="input-group-prepend">
+                                    <select class="custom-select" id="sort-list">
+                                        <option value="name" selected>name</option>
+                                        <option value="department">department</option>
+                                        <option value="location">location</option>
+                                    </select>
                                 </div>
+                                <input type="text" id="search-bar" class="form-control" placeholder="Search" />
                             </div>
-
                         </form>
                         <!-- Search Bar End -->
 
@@ -50,9 +50,6 @@
                         <div class="btn-group ml-3 mr-2" role="group">
                             <button type="button" id="add-btn" class="btn btn-primary" title="add">
                                 <i class="bi bi-plus-circle-fill"></i>
-                            </button>
-                            <button type="button" id="filter-btn" class="btn btn-dark" title="filter">
-                                <i class="bi bi-funnel-fill"></i>
                             </button>
                             <button type="button" id="refresh-btn" class="btn btn-dark" title="refresh">
                                 <i class="bi bi-arrow-clockwise"></i>
@@ -194,3 +191,14 @@
 </body>
 
 </html>
+
+<!--Searchbar area-->
+<!-- <div id="searchCol" class="col col-12 col-sm-12 col-md-6 position-relative">
+    <input class="" id="searchBar" type="search" spellcheck="false" placeholder="Search">
+    <select id="sortSelect" class="form-select form-select-sm position-absolute" style="z-index: 2">
+      <option value="firstName">by name</option>
+      <option value="lastName" selected>by last name</option>
+      <option value="department">by department</option>
+      <option value="location">by location</option>
+    </select>
+  </div> -->

@@ -1,13 +1,12 @@
 <?php
 
 	// example use from browser
-	// http://localhost/companydirectory/libs/php/getAll.php
+	// http://localhost/companydirectory/libs/php/getAllDepartments.php
 
-	// remove next two lines for production
+	// remove next two lines for production	
 	
 	ini_set('display_errors', 'On');
 	error_reporting(E_ALL);
-	
 
 	$executionStartTime = microtime(true);
 
@@ -31,11 +30,11 @@
 
 		exit;
 
-	}
-	
-	$departmentId = $_REQUEST['departmentId'];
+	}	
 
-	$query = "SELECT p.id, p.lastName, p.firstName, p.jobTitle, p.email, p.departmentID as departmentId, d.name as department FROM personnel p LEFT JOIN department d ON (d.id = p.departmentID) WHERE d.id = $departmentId";
+	// SQL does not accept parameters and so is not prepared
+
+	$query = 'SELECT id, name, locationID FROM department';
 
 	$result = $conn->query($query);
 	
@@ -67,7 +66,6 @@
 	$output['status']['description'] = "success";
 	$output['status']['returnedIn'] = (microtime(true) - $executionStartTime) / 1000 . " ms";
 	$output['data'] = $data;
-	$output['req'] = $_REQUEST;
 	
 	mysqli_close($conn);
 

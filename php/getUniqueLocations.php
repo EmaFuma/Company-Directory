@@ -1,12 +1,12 @@
 <?php
 
-	
+	// example use from browser
+	// http://localhost/companydirectory/libs/php/getAllDepartments.php
 
-	// remove next two lines for production
+	// remove next two lines for production	
 	
 	ini_set('display_errors', 'On');
 	error_reporting(E_ALL);
-	
 
 	$executionStartTime = microtime(true);
 
@@ -30,11 +30,9 @@
 
 		exit;
 
-	}
-	
-	$locationId = $_REQUEST['locationId'];
+	}	
 
-	$query = "SELECT d.name as name, d.id as id FROM department d LEFT JOIN  location l ON (l.id = d.locationID) WHERE l.id = $locationId";
+	$query = 'SELECT id, name FROM location';
 
 	$result = $conn->query($query);
 	
@@ -66,7 +64,6 @@
 	$output['status']['description'] = "success";
 	$output['status']['returnedIn'] = (microtime(true) - $executionStartTime) / 1000 . " ms";
 	$output['data'] = $data;
-	$output['req'] = $_REQUEST;
 	
 	mysqli_close($conn);
 

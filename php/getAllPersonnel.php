@@ -1,9 +1,13 @@
 <?php
 
+	// example use from browser
+	// http://localhost/companydirectory/libs/php/getAll.php
+
 	// remove next two lines for production
 	
 	ini_set('display_errors', 'On');
 	error_reporting(E_ALL);
+	
 
 	$executionStartTime = microtime(true);
 
@@ -27,9 +31,26 @@
 
 		exit;
 
-	}	
+	}
+	
+	$firstName = $_REQUEST['firstName'];
+	$lastName = $_REQUEST['lastName'];
 
-	$query = 'SELECT * FROM personnel';
+	switch ($_REQUEST['sortBy']) {
+		case 'name':
+			$sortBy = 'p.firstName';
+			break;
+		case 'department':
+			$sortBy = 'department';
+			break;
+		case 'location':
+			$sortBy = 'location';
+			break;
+		default:
+			$sortBy = 'p.firstName';
+	};
+
+	$query = "SELECT p.id, p.lastName, p.firstName, p.jobTitle, p.email, p.departmentID as departmentId, d.name as department, l.name as location FROM personnel p LEFT JOIN department d ON (d.id = p.departmentID) LEFT JOIN location l ON (l.id = d.locationID) WHERE p.firstName LIKE '$firstName%' OR p.lastName LIKE '$firstName%' OR p.firstName LIKE '$lastName%' OR p.lastName LIKE '$lastName%'  ORDER BY $sortBy";
 
 	$result = $conn->query($query);
 	
@@ -61,6 +82,7 @@
 	$output['status']['description'] = "success";
 	$output['status']['returnedIn'] = (microtime(true) - $executionStartTime) / 1000 . " ms";
 	$output['data'] = $data;
+	$output['req'] = $_REQUEST;
 	
 	mysqli_close($conn);
 

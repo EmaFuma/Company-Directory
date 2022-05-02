@@ -16,31 +16,55 @@ function getType() {
   return type[0].title;
 }
 
-// FILTER NAMES FROM SEARCH BAR
-
-function navSearch() {
-  const active = getType();
-  let input, filter, table, tr, td, cell, i, j;
-  input = document.getElementById("search-bar");
-  filter = input.value.toUpperCase();
-  table = document.getElementById(`${active}-table`);
-  tr = table.getElementsByTagName("tr");
-  for (i = 0; i < tr.length; i++) {
-    // Hide the row initially.
-    tr[i].style.display = "none";
-
-    td = tr[i].getElementsByTagName("td");
-    for (j = 0; j < td.length; j++) {
-      cell = tr[i].getElementsByTagName("td")[j];
-      if (cell) {
-        if (cell.innerHTML.toUpperCase().indexOf(filter) > -1) {
-          tr[i].style.display = "";
-          break;
-        }
-      }
-    }
-  }
+//function to prepare string from searchbar for personnel query:
+function queryPrepare(queryStr) {
+  let strArray = queryStr.trim().split(' ');
+  var first = strArray[0];
+  var last = strArray[strArray.length - 1];
+  return [first, last];
 }
+
+//function to prepare string from searchbar for location and department query:
+function queryPrepareDeptLoc(queryStr) {
+  var query = queryStr.trim();
+  return query;
+}
+
+// Search bar event listener
+let delay;
+$("#search-bar").on("input", function () {
+  const input = $("#search-bar").val();
+
+  clearTimeout(delay);
+
+  switch (getType()) {
+    case "personnel":
+      delay = setTimeout(function () {
+        getAllPersonnel(input, $("#sort-list").val())
+      }, 300);
+      break;
+
+    case "department":
+      delay = setTimeout(function () {
+        getAllDepartments(input);
+      }, 300);
+      break;
+
+    case "location":
+      delay = setTimeout(function () {
+        getAllLocations(input);
+      }, 300);
+      break;
+
+    default:
+      break;
+  }
+})
+
+//sortSelect event listener:
+$('#sort-list').on('change', function () {
+  getAllPersonnel($('#search-bar').val(), $('#sort-list').val());
+});
 
 $(document).ready(function () {
   //Disable forms submit on enter
@@ -51,7 +75,7 @@ $(document).ready(function () {
     }
   });
 
-  getAllPersonnel("");
+  getAllPersonnel("", $("#sort-list").val());
   getAllDepartments("");
   getAllLocations("");
   $(".company-tabs").html("Personnel");
@@ -64,6 +88,7 @@ $(document).ready(function () {
     $("#personnel-table").show();
     $("#department-btn").removeClass("active");
     $("#location-btn").removeClass("active");
+    $("#sort-list").removeAttr("disabled");
     $(this).addClass("active");
     resetForm("add");
     resetForm("edit");
@@ -77,6 +102,7 @@ $(document).ready(function () {
     $("#department-table").show();
     $("#personnel-btn").removeClass("active");
     $("#location-btn").removeClass("active");
+    $("#sort-list").attr("disabled", true);
     $(this).addClass("active");
     resetForm("add");
     resetForm("edit");
@@ -90,6 +116,7 @@ $(document).ready(function () {
     $("#location-table").show();
     $("#personnel-btn").removeClass("active");
     $("#department-btn").removeClass("active");
+    $("#sort-list").attr("disabled", true);
     $(this).addClass("active");
     resetForm("add");
     resetForm("edit");
@@ -99,7 +126,7 @@ $(document).ready(function () {
   // REFRESH BUTTON
   // refresh tables on refresh button click
   $("#refresh-btn").click(function () {
-    getAllPersonnel("");
+    getAllPersonnel("", $("#sort-list").val());
     getAllDepartments("");
     getAllLocations("");
     $("#search-bar").val("");
@@ -525,7 +552,7 @@ function deletePersonnel(deleteId) {
     },
     success: function (results) {
       displayAlert("delete", results.status.code, results.status.description);
-      getAllPersonnel("");
+      getAllPersonnel("", $("#sort-list").val());
     },
     error: function () {
       console.log("Error occured deleting personnel record!");
@@ -577,13 +604,20 @@ function deleteLocation(deleteId) {
 
 // get personnel from database
 
-function getAllPersonnel() {
+function getAllPersonnel(filter, sort) {
+  const first = queryPrepare(filter)[0];
+  const last = queryPrepare(filter)[1];
   $.ajax({
     async: true,
     global: false,
     type: "POST",
-    url: "php/getAll.php",
+    url: "php/getAllPersonnel.php",
     dataType: "json",
+    data: {
+      firstName: first,
+      lastName: last,
+      sortBy: sort
+    },
     success: function (result) {
       const employer = result.data;
       let content = "";
@@ -606,13 +640,17 @@ function getAllPersonnel() {
   });
 }
 
-function getAllDepartments() {
+function getAllDepartments(filter) {
+  const search = queryPrepareDeptLoc(filter);
   $.ajax({
     async: true,
     global: false,
     type: "POST",
     url: "php/getAllDepartments.php",
     dataType: "json",
+    data: {
+      search: search
+    },
     success: function (result) {
       const department = result.data;
       let content = "";
@@ -633,13 +671,17 @@ function getAllDepartments() {
   });
 }
 
-function getAllLocations() {
+function getAllLocations(filter) {
+  const search = queryPrepareDeptLoc(filter);
   $.ajax({
     async: true,
     global: false,
     type: "POST",
     url: "php/getAllLocations.php",
     dataType: "json",
+    data: {
+      search: search
+    },
     success: function (result) {
       const locations = result.data;
       let content = "";
@@ -789,7 +831,7 @@ function getUniqueDepartments(selectedValue) {
   $.ajax({
     async: false,
     global: false,
-    url: "php/getAllDepartments.php",
+    url: "php/getUniqueDepartments.php",
     dataType: "json",
     success: function (results) {
       data = displayOptions(results, selectedValue);
@@ -806,7 +848,7 @@ function getUniqueLocations(selectedValue) {
   $.ajax({
     async: false,
     global: false,
-    url: "php/getAllLocations.php",
+    url: "php/getUniqueLocations.php",
     dataType: "json",
     success: function (results) {
       data = displayOptions(results, selectedValue);
@@ -895,7 +937,7 @@ function editPersonnel(editObj, editId) {
     },
     success: function (results) {
       displayAlert("edit", results.status.code, results.status.description);
-      getAllPersonnel("");
+      getAllPersonnel("", $("#sort-list").val());
     },
     error: function () {
       console.log("Error occured editting personnel!");

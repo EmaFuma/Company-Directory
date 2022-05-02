@@ -1,9 +1,6 @@
 <?php
 
-	// example use from browser
-	// http://localhost/companydirectory/libs/php/getAllDepartments.php
-
-	// remove next two lines for production	
+	// remove next two lines for production
 	
 	ini_set('display_errors', 'On');
 	error_reporting(E_ALL);
@@ -32,9 +29,9 @@
 
 	}	
 
-	// SQL does not accept parameters and so is not prepared
+	$search = $_REQUEST['search'];
 
-	$query = 'SELECT id, name, locationID FROM department';
+	$query = "SELECT d.id, d.name, d.locationID, l.name as location FROM department d LEFT JOIN location l ON (d.locationID = l.id) WHERE d.name LIKE '$search%' ORDER BY d.name";
 
 	$result = $conn->query($query);
 	
