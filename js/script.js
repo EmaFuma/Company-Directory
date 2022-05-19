@@ -30,42 +30,6 @@ function queryPrepareDeptLoc(queryStr) {
   return query;
 }
 
-// Search bar event listener
-let delay;
-$("#search-bar").on("input", function () {
-  const input = $("#search-bar").val();
-
-  clearTimeout(delay);
-
-  switch (getType()) {
-    case "personnel":
-      delay = setTimeout(function () {
-        getAllPersonnel(input, $("#sort-list").val())
-      }, 300);
-      break;
-
-    case "department":
-      delay = setTimeout(function () {
-        getAllDepartments(input);
-      }, 300);
-      break;
-
-    case "location":
-      delay = setTimeout(function () {
-        getAllLocations(input);
-      }, 300);
-      break;
-
-    default:
-      break;
-  }
-})
-
-//sortSelect event listener:
-$('#sort-list').on('change', function () {
-  getAllPersonnel($('#search-bar').val(), $('#sort-list').val());
-});
-
 $(document).ready(function () {
   //Disable forms submit on enter
   $(window).keydown(function (e) {
@@ -75,9 +39,9 @@ $(document).ready(function () {
     }
   });
 
-  getAllPersonnel("", $("#sort-list").val());
-  getAllDepartments("");
-  getAllLocations("");
+  getAllPersonnel();
+  getAllDepartments();
+  getAllLocations();
   $(".company-tabs").html("Personnel");
 
   // TABS
@@ -88,7 +52,7 @@ $(document).ready(function () {
     $("#personnel-table").show();
     $("#department-btn").removeClass("active");
     $("#location-btn").removeClass("active");
-    $("#sort-list").removeAttr("disabled");
+    $("#search-btn").removeAttr("disabled");
     $(this).addClass("active");
     resetForm("add");
     resetForm("edit");
@@ -102,7 +66,7 @@ $(document).ready(function () {
     $("#department-table").show();
     $("#personnel-btn").removeClass("active");
     $("#location-btn").removeClass("active");
-    $("#sort-list").attr("disabled", true);
+    $("#search-btn").attr("disabled", true);
     $(this).addClass("active");
     resetForm("add");
     resetForm("edit");
@@ -116,7 +80,7 @@ $(document).ready(function () {
     $("#location-table").show();
     $("#personnel-btn").removeClass("active");
     $("#department-btn").removeClass("active");
-    $("#sort-list").attr("disabled", true);
+    $("#search-btn").attr("disabled", true);
     $(this).addClass("active");
     resetForm("add");
     resetForm("edit");
@@ -126,20 +90,36 @@ $(document).ready(function () {
   // REFRESH BUTTON
   // refresh tables on refresh button click
   $("#refresh-btn").click(function () {
-    getAllPersonnel("", $("#sort-list").val());
-    getAllDepartments("");
-    getAllLocations("");
+    getAllPersonnel();
+    getAllDepartments();
+    getAllLocations();
     $("#search-bar").val("");
 
     resetForm("add");
     resetForm("edit");
   });
 
-  // display personnel modal on view click
+  // VIEW FUNCTION
   $(document).on("click", "tbody tr .view-btn", function () {
     let id = $(this).parent().parent().siblings().html();
     getPersonnelById(id, "modal");
   });
+
+  // FILTER FUNCTION
+  // display filter modal on filter button click
+  $("#search-btn").click(function () {
+    resetForm("filter");
+    filterModal();
+  })
+
+  // Submit filter query
+  $("#search-submit").click(function () {
+    let firstName = $("#first-search").val();
+    let lastName = $("#last-search").val();
+    let department = $("#department-search").val();
+    let location = $("#location-search").val();
+    getFilterPersonnel(firstName, lastName, department, location);
+  })
 
   // ADD FUNCTIONS
   // display add modal on add button click
@@ -250,9 +230,6 @@ function displayAlert(displayId, status, message) {
 // create and display options
 function displayOptions(object, selectedValue) {
   let content = "";
-  if (selectedValue == 0) {
-    content += '<option selected hidden value="">Select...</option>';
-  }
   for (const [key, value] of Object.entries(object.data)) {
     if (value.id == selectedValue) {
       content += `<option value="${value.id}" selected>${value.name}</option>`;
@@ -303,31 +280,33 @@ function addModal(type) {
       content = `<div class="form-row">
 				<div class="form-group col-12 col-md-6">
 					<label for="add-first">First Name<span class="text-danger">*</span></label>
-					<input type="text" id="add-first" class="form-control form-required" placeholder="First Name">
+					<input type="text" id="add-first" class="form-control form-required">
 				</div>
 				<div class="form-group col-12 col-md-6">
 					<label for="add-last">Last Name<span class="text-danger">*</span></label>
-					<input type="text" id="add-last" class="form-control form-required" placeholder="Last Name">
+					<input type="text" id="add-last" class="form-control form-required">
 				</div>
 			</div>
 			<div class="form-group">
 				<label for="add-title">Job Title<span class="text-danger">*</span></label>
-				<input type="text" id="add-title" class="form-control form-required" placeholder="Job Title">
+				<input type="text" id="add-title" class="form-control form-required">
 			</div>
 			<div class="form-group">	
 				<label for="add-email">Email<span class="text-danger">*</span></label>
-				<input type="email" id="add-email" class="form-control form-required" placeholder="Email">
+				<input type="email" id="add-email" class="form-control form-required">
 			</div>
 			<div class="form-row">
 				<div class="form-group col-12 col-md-6">
 					<label for="add-department">Department<span class="text-danger">*</span></label>
 					<select id="add-department" class="form-control form-required">
+            <option selected hidden value="">Select...</option>
             ${getUniqueDepartments(0)}
 					</select>
 				</div>
 				<div class="form-group col-12 col-md-6">
 					<label for="add-location">Location<span class="text-danger">*</span></label>
 					<select id="add-location" class="form-control form-required" readonly disabled>
+            <option selected hidden value="">Select...</option>
             ${getUniqueLocations(0)}
 					</select>
 				</div>
@@ -342,6 +321,7 @@ function addModal(type) {
 			<div class="form-group">
 				<label for="add-location">Department Location<span class="text-danger">*</span></label>
 				<select id="add-location" class="form-control form-required">
+          <option selected hidden value="">Select...</option>
           ${getUniqueLocations(0)}
 				</select>
 			</div>`;
@@ -387,19 +367,19 @@ function deleteModal(type, id) {
   let content = "";
   switch (type) {
     case "personnel":
-      content = `<h6>Are you sure you wish to delete record?</h6>
+      content = `<h6 class="mb-3">Are you sure you wish to delete record?</h6>
 				<button id="delete-modal-yes" class="btn btn-success">Yes</button>
 				<button id="delete-modal-no" class="btn btn-danger" data-dismiss="modal">No</button>`;
       break;
 
     case "department":
-      content = `<h6>Are you sure you wish to delete department?</h6>
+      content = `<h6 class="mb-3">Are you sure you wish to delete department?</h6>
 				<button id="delete-modal-yes" class="btn btn-success">Yes</button>
 				<button id="delete-modal-no" class="btn btn-danger" data-dismiss="modal">No</button>`;
       break;
 
     case "location":
-      content = `<h6>Are you sure you wish to delete location?</h6>
+      content = `<h6 class="mb-3">Are you sure you wish to delete location?</h6>
 				<button type="button" id="delete-modal-yes" class="btn btn-success">Yes</button>
 				<button id="delete-modal-no" class="btn btn-danger" data-dismiss="modal">No</button>`;
       break;
@@ -408,6 +388,33 @@ function deleteModal(type, id) {
   $("#delete-modal").modal("show");
 }
 
+function filterModal() {
+  let content = ` 
+    <div class="form-group">
+      <label for="first-search">First Name</label>
+      <input type="text" class="form-control" id="first-search">
+    </div>
+    <div class="form-group">
+      <label for="last-search">Last Name</label>
+      <input type="text" class="form-control" id="last-search">
+    </div>
+    <div class="form-group">
+      <label for="department-search">Department</label>
+      <select class="form-control" id="department-search">
+        <option value="">All Departments</option>
+        ${getUniqueDepartments(0)}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="location-search">Location</label>
+      <select class="form-control" id="location-search">
+        <option value="">All Locations</option>
+        ${getUniqueLocations(0)}
+      </select>
+    </div>`;
+  $("#filter-form").html(content);
+  $("#filter-modal").modal("show");
+}
 
 // ----------------------------------------------------------------------------CREATE SCRIPT-----------------------------------------------------------------------------
 
@@ -467,7 +474,7 @@ function addPersonnel(addObj) {
     },
     success: function (results) {
       displayAlert("add", results.status.code, results.status.description);
-      getAllPersonnel("");
+      getAllPersonnel();
     },
     error: function () {
       console.log("Add personnel error occured");
@@ -488,7 +495,7 @@ function addDepartment(addObj) {
     },
     success: function (results) {
       displayAlert("add", results.status.code, results.status.description);
-      getAllDepartments("");
+      getAllDepartments();
     },
     error: function () {
       console.log("Add department error occured");
@@ -508,7 +515,7 @@ function addLocation(addObj) {
     },
     success: function (results) {
       displayAlert("add", results.status.code, results.status.description);
-      getAllLocations("");
+      getAllLocations();
     },
     error: function () {
       console.log("Error occured adding location!");
@@ -552,7 +559,7 @@ function deletePersonnel(deleteId) {
     },
     success: function (results) {
       displayAlert("delete", results.status.code, results.status.description);
-      getAllPersonnel("", $("#sort-list").val());
+      getAllPersonnel();
     },
     error: function () {
       console.log("Error occured deleting personnel record!");
@@ -572,7 +579,7 @@ function deleteDepartment(deleteId) {
     },
     success: function (results) {
       displayAlert("delete", results.status.code, results.status.description);
-      getAllDepartments("");
+      getAllDepartments();
     },
     error: function () {
       console.log("Error occured deleting department!");
@@ -592,7 +599,7 @@ function deleteLocation(deleteId) {
     },
     success: function (results) {
       displayAlert("delete", results.status.code, results.status.description);
-      getAllLocations("");
+      getAllLocations();
     },
     error: function () {
       console.log("Error occured deleting location!");
@@ -604,20 +611,13 @@ function deleteLocation(deleteId) {
 
 // get personnel from database
 
-function getAllPersonnel(filter, sort) {
-  const first = queryPrepare(filter)[0];
-  const last = queryPrepare(filter)[1];
+function getAllPersonnel() {
   $.ajax({
     async: true,
     global: false,
     type: "POST",
     url: "php/getAllPersonnel.php",
     dataType: "json",
-    data: {
-      firstName: first,
-      lastName: last,
-      sortBy: sort
-    },
     success: function (result) {
       const employer = result.data;
       let content = "";
@@ -641,16 +641,12 @@ function getAllPersonnel(filter, sort) {
 }
 
 function getAllDepartments(filter) {
-  const search = queryPrepareDeptLoc(filter);
   $.ajax({
     async: true,
     global: false,
     type: "POST",
     url: "php/getAllDepartments.php",
     dataType: "json",
-    data: {
-      search: search
-    },
     success: function (result) {
       const department = result.data;
       let content = "";
@@ -671,17 +667,13 @@ function getAllDepartments(filter) {
   });
 }
 
-function getAllLocations(filter) {
-  const search = queryPrepareDeptLoc(filter);
+function getAllLocations() {
   $.ajax({
     async: true,
     global: false,
     type: "POST",
     url: "php/getAllLocations.php",
     dataType: "json",
-    data: {
-      search: search
-    },
     success: function (result) {
       const locations = result.data;
       let content = "";
@@ -738,15 +730,13 @@ function getPersonnelById(personnelId, type, selectId) {
 					<input type="text" id="edit-title" class="form-control form-required" value="${
             results.data[0].jobTitle
           }">
-				</div>
-				<div class="form-row">
-					<div class="form-group col-12 col-md-6">
-						<label for="edit-email">Email<span class="text-danger">*</span></label>
-						<input type="email" id="edit-email" class="form-control form-required" value="${
-              results.data[0].email
-            }">
-					</div>
-				</div>
+				</div>	
+				<div class="form-group">
+					<label for="edit-email">Email<span class="text-danger">*</span></label>
+					<input type="email" id="edit-email" class="form-control form-required" value="${
+            results.data[0].email
+          }">
+				</div>				
 				<div class="form-row">
 					<div class="form-group col-12 col-md-6">
 						<label for="edit-department">Department<span class="text-danger">*</span></label>
@@ -881,6 +871,51 @@ function getLocationByDepartmentId(departmentId, selectId) {
   return data;
 }
 
+function getFilterPersonnel(first, last, dep, loc) {
+  $.ajax({
+    async: true,
+    global: false,
+    type: "POST",
+    url: "php/getFilterPersonnel.php",
+    dataType: "json",
+    data: {
+      firstName: first,
+      lastName: last,
+      department: dep,
+      location: loc
+    },
+    success: function (result) {
+      const employer = result.data.personnel;
+      const status = result.status.code;
+      const message = result.status.description;
+      if (status == 400) {
+        displayAlert("filter", status, message)
+      } else {
+        let content = "";
+        for (let i = 0; i < employer.length; i++) {
+          content += `<tr>
+            <td class="id">${employer[i].id}</td>
+            <td class="align-middle">${employer[i].firstName} ${employer[i].lastName}</td>
+              <td class="text-right">
+                <div class="btn-group" role="group">
+                  <button class="view-btn btn text-primary" title="view"><i class="bi bi-eye-fill"></i></button>
+                  <button class="edit-btn btn text-primary" title="edit"><i class="bi bi-pencil-square"></i></button>
+                  <button class="delete-btn btn text-danger" title="delete"><i class="bi bi-trash3-fill"></i></button>
+                </div>
+              </td>
+          </tr>`
+
+        }
+        $("#personnel-table tbody").html(content);
+        $("#filter-modal").modal("hide");
+      }
+    },
+    error: function () {
+      console.log("error occured getting location by id");
+    }
+  });
+}
+
 // ----------------------------------------------------------------------------UPDATE SCRIPT-----------------------------------------------------------------------------
 
 function editRecord(type, editId) {
@@ -937,7 +972,7 @@ function editPersonnel(editObj, editId) {
     },
     success: function (results) {
       displayAlert("edit", results.status.code, results.status.description);
-      getAllPersonnel("", $("#sort-list").val());
+      getAllPersonnel();
     },
     error: function () {
       console.log("Error occured editting personnel!");

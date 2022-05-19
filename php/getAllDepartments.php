@@ -29,9 +29,7 @@
 
 	}	
 
-	$search = $_REQUEST['search'];
-
-	$query = "SELECT d.id, d.name, d.locationID, l.name as location FROM department d LEFT JOIN location l ON (d.locationID = l.id) WHERE d.name LIKE '$search%' ORDER BY d.name";
+	$query = "SELECT d.id, d.name, d.locationID, l.name as location FROM department d LEFT JOIN location l ON (d.locationID = l.id) ORDER BY d.name";
 
 	$result = $conn->query($query);
 	

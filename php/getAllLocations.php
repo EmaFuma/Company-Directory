@@ -29,9 +29,7 @@
 
 	}	
 
-	$search = $_REQUEST['search'];
-
-	$query = "SELECT id, name FROM location WHERE name LIKE '$search%' ORDER BY name";
+	$query = "SELECT id, name FROM location ORDER BY name";
 
 	$result = $conn->query($query);
 	
