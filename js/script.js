@@ -16,20 +16,6 @@ function getType() {
   return type[0].title;
 }
 
-//function to prepare string from searchbar for personnel query:
-function queryPrepare(queryStr) {
-  let strArray = queryStr.trim().split(' ');
-  let first = strArray[0];
-  let last = strArray[strArray.length - 1];
-  return [first, last];
-}
-
-//function to prepare string from searchbar for location and department query:
-function queryPrepareDeptLoc(queryStr) {
-  let query = queryStr.trim();
-  return query;
-}
-
 $(document).ready(function () {
   //Disable forms submit on enter
   $(window).keydown(function (e) {
@@ -640,7 +626,7 @@ function getAllPersonnel() {
   });
 }
 
-function getAllDepartments(filter) {
+function getAllDepartments() {
   $.ajax({
     async: true,
     global: false,
