@@ -130,6 +130,7 @@ $(document).ready(function () {
   // EDIT FUNCTIONS
   // display edit modal on edit button click
   $(document).on("click", "tbody tr .edit-btn", function () {
+    resetForm("edit");
     let id = $(this).parent().parent().siblings().html();
     editModal(getType(), id);
   });
