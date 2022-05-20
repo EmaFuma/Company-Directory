@@ -28,7 +28,10 @@ $(document).ready(function () {
   getAllPersonnel();
   getAllDepartments();
   getAllLocations();
+  filter();
+  filterByInput();
   $(".company-tabs").html("Personnel");
+
 
   // TABS
   // display personnel table on personnel tab click
@@ -38,7 +41,6 @@ $(document).ready(function () {
     $("#personnel-table").show();
     $("#department-btn").removeClass("active");
     $("#location-btn").removeClass("active");
-    $("#search-btn").removeAttr("disabled");
     $(this).addClass("active");
     resetForm("add");
     resetForm("edit");
@@ -52,7 +54,6 @@ $(document).ready(function () {
     $("#department-table").show();
     $("#personnel-btn").removeClass("active");
     $("#location-btn").removeClass("active");
-    $("#search-btn").attr("disabled", true);
     $(this).addClass("active");
     resetForm("add");
     resetForm("edit");
@@ -66,7 +67,6 @@ $(document).ready(function () {
     $("#location-table").show();
     $("#personnel-btn").removeClass("active");
     $("#department-btn").removeClass("active");
-    $("#search-btn").attr("disabled", true);
     $(this).addClass("active");
     resetForm("add");
     resetForm("edit");
@@ -79,6 +79,8 @@ $(document).ready(function () {
     getAllPersonnel();
     getAllDepartments();
     getAllLocations();
+    filter();
+    filterByInput();
     $("#search-bar").val("");
 
     resetForm("add");
@@ -92,19 +94,40 @@ $(document).ready(function () {
   });
 
   // FILTER FUNCTION
-  // display filter modal on filter button click
-  $("#search-btn").click(function () {
-    resetForm("filter");
-    filterModal();
+
+  //searchbar event listener:
+  function filterByInput() {
+    let delay;
+    $("#filter-input").on("input", function () {
+      const employee = $("#filter-input").val();
+      const department = $("#department-filter").val();
+      const location = $("#location-filter").val();
+      clearTimeout(delay);
+
+      delay = setTimeout(function () {
+        getFilterPersonnel(employee, department, location);
+      })
+    });
+  }
+
+  function filterByDepartmentOrLocation() {
+    let delay;
+    const employee = $("#filter-input").val();
+    const department = $("#department-filter").val();
+    const location = $("#location-filter").val();
+    clearTimeout(delay);
+
+    delay = setTimeout(function () {
+      getFilterPersonnel(employee, department, location);
+    })
+  }
+
+  $(document).on("change", "#department-filter", function () {
+    filterByDepartmentOrLocation();
   })
 
-  // Submit filter query
-  $("#search-submit").click(function () {
-    let firstName = $("#first-search").val();
-    let lastName = $("#last-search").val();
-    let department = $("#department-search").val();
-    let location = $("#location-search").val();
-    getFilterPersonnel(firstName, lastName, department, location);
+  $(document).on("change", "#location-filter", function () {
+    filterByDepartmentOrLocation();
   })
 
   // ADD FUNCTIONS
@@ -125,6 +148,8 @@ $(document).ready(function () {
     let type = $("#add-type").html();
     validateForm("add");
     addRecord(type);
+    filter();
+    filterByInput();
   });
 
   // EDIT FUNCTIONS
@@ -146,6 +171,8 @@ $(document).ready(function () {
     let id = $("#edit-id").html();
     validateForm("edit");
     editRecord(getType(), id);
+    filter();
+    filterByInput();
   });
 
   //DELETE FUNCTIONS
@@ -158,6 +185,8 @@ $(document).ready(function () {
   $(document).on("click", "#delete-modal-yes", function () {
     let id = $("#delete-id").html();
     deleteRecord(getType(), id);
+    filter();
+    filterByInput();
   });
 });
 
@@ -375,32 +404,26 @@ function deleteModal(type, id) {
   $("#delete-modal").modal("show");
 }
 
-function filterModal() {
+function filter() {
   let content = ` 
-    <div class="form-group">
-      <label for="first-search">First Name</label>
-      <input type="text" class="form-control" id="first-search">
-    </div>
-    <div class="form-group">
-      <label for="last-search">Last Name</label>
-      <input type="text" class="form-control" id="last-search">
-    </div>
-    <div class="form-group">
-      <label for="department-search">Department</label>
-      <select class="form-control" id="department-search">
-        <option value="">All Departments</option>
-        ${getUniqueDepartments(0)}
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="location-search">Location</label>
-      <select class="form-control" id="location-search">
-        <option value="">All Locations</option>
-        ${getUniqueLocations(0)}
-      </select>
+    <div class="row">
+      <div class="col-sm-4">
+        <input type="text" class="form-control" id="filter-input" placeholder="Employee">
+      </div>
+      <div class="col-sm-4">
+        <select class="form-control" id="department-filter">
+          <option value="">All Departments</option>
+          ${getUniqueDepartments(0)}
+        </select>
+      </div>
+      <div class="col-sm-4">
+        <select class="form-control" id="location-filter">
+          <option value="">All Locations</option>
+          ${getUniqueLocations(0)}
+        </select>
+      </div>
     </div>`;
   $("#filter-form").html(content);
-  $("#filter-modal").modal("show");
 }
 
 // ----------------------------------------------------------------------------CREATE SCRIPT-----------------------------------------------------------------------------
@@ -858,7 +881,7 @@ function getLocationByDepartmentId(departmentId, selectId) {
   return data;
 }
 
-function getFilterPersonnel(first, last, dep, loc) {
+function getFilterPersonnel(emp, dep, loc) {
   $.ajax({
     async: true,
     global: false,
@@ -866,21 +889,15 @@ function getFilterPersonnel(first, last, dep, loc) {
     url: "php/getFilterPersonnel.php",
     dataType: "json",
     data: {
-      firstName: first,
-      lastName: last,
+      employee: emp,
       department: dep,
       location: loc
     },
     success: function (result) {
       const employer = result.data.personnel;
-      const status = result.status.code;
-      const message = result.status.description;
-      if (status == 400) {
-        displayAlert("filter", status, message)
-      } else {
-        let content = "";
-        for (let i = 0; i < employer.length; i++) {
-          content += `<tr>
+      let content = "";
+      for (let i = 0; i < employer.length; i++) {
+        content += `<tr>
             <td class="id">${employer[i].id}</td>
             <td class="align-middle">${employer[i].firstName} ${employer[i].lastName}</td>
               <td class="text-right">
@@ -892,10 +909,8 @@ function getFilterPersonnel(first, last, dep, loc) {
               </td>
           </tr>`
 
-        }
-        $("#personnel-table tbody").html(content);
-        $("#filter-modal").modal("hide");
       }
+      $("#personnel-table tbody").html(content);
     },
     error: function () {
       console.log("error occured getting location by id");

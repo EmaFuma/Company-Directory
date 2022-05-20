@@ -76,3 +76,9 @@
 #location-table {
     display: none;
 }
+
+@media only screen and (max-width: 576px) {
+    .table tbody {
+        max-height: calc(100vh - 21em);
+    }
+}

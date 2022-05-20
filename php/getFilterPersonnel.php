@@ -25,29 +25,23 @@
         exit();
     }
 
-    $firstName = $_REQUEST["firstName"];
-    $lastName = $_REQUEST["lastName"];
+    $employee = $_REQUEST["employee"];
     $department = $_REQUEST["department"];
     $location = $_REQUEST["location"];
 
-    if ((isset($firstName) and strlen($firstName) > 0) and (isset($lastName) and strlen($lastName) > 0)) {
-        $firstName .= "%";
-        $lastName .= "%";
-    } elseif (isset($firstName) and strlen($firstName) > 0) {
-        $firstName .= "%";
-    } elseif (isset($lastName) and strlen($lastName) > 0) {
-        $lastName .= "%";
+    if (isset($employee) and strlen($employee) > 0) {
+        $employee .= "%";
     } else {
-        $firstName = "%";
-        $lastName = "%";
+        $employee = "%";
     }
+
 
     $sqlStr = "SELECT p.id, p.lastName, p.firstName, p.jobTitle, p.email, 
                 d.name as department, l.name as location 
                 FROM personnel p 
                 LEFT JOIN department d ON (p.departmentID = d.id) 
                 LEFT JOIN location l ON (d.locationID = l.id)
-                WHERE (p.firstName LIKE '$firstName' OR p.lastName LIKE '$lastName')";
+                WHERE (p.firstName LIKE '$employee' OR p.lastName LIKE '$employee')";
 
     if (isset($department) and strlen($department) > 0) {
         $sqlStr = $sqlStr . " and d.id =" . $department;

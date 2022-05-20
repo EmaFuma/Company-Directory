@@ -13,7 +13,7 @@
     <link rel="icon" href="css/favicon.ico" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" />
     <link rel="stylesheet" href="libs/bootstrap/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="css/style.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
 </head>
 
 <body>
@@ -30,19 +30,7 @@
         <div class="row" id="list">
             <div class="card" role="tabpanel" aria-labelledby="personnel-tab">
                 <div class="card-header">
-                    <div class="d-flex justify-content-between">
-                        <button type="button" class="btn btn-dark" id="search-btn">Search</button>
-                        <!-- Button Group -->
-                        <div class="btn-group ml-3 mr-2" role="group">
-                            <button type="button" id="add-btn" class="btn btn-primary" title="add">
-                                <i class="bi bi-plus-circle-fill"></i>
-                            </button>
-                            <button type="button" id="refresh-btn" class="btn btn-dark" title="refresh">
-                                <i class="bi bi-arrow-clockwise"></i>
-                            </button>
-                        </div>
-                        <!-- Button Group End -->
-                    </div>
+                    <form id="filter-form" class="d-flex justify-content-center"></form>
                 </div>
                 <div class="card-body pt-3">
                     <h6 class="company-tabs text-center mb-3"></h6>
@@ -59,7 +47,7 @@
                     </div>
                 </div>
                 <div class="card-footer text-center">
-                    <div role="group">
+                    <div class="btn-group" role="group">
                         <button type="button" id="personnel-btn" class="btn btn-dark active" title="personnel">
                             <i class="bi bi-person-fill"></i>
                         </button>
@@ -70,34 +58,19 @@
                             <i class="bi bi-geo-alt-fill"></i>
                         </button>
                     </div>
+                    <div class="btn-group ml-3 mr-2" role="group">
+                        <button type="button" id="add-btn" class="btn btn-primary" title="add">
+                            <i class="bi bi-plus-circle-fill"></i>
+                        </button>
+                        <button type="button" id="refresh-btn" class="btn btn-dark" title="refresh">
+                            <i class="bi bi-arrow-clockwise"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
     <!-- Main Section End -->
-
-    <!-- ====== Filter Modal ====== -->
-    <div id="filter-modal" class="modal fade" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Search Employee</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="filter-alert"></div>
-                    <form id="filter-form"></form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="search-submit">Search</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Filter Modal End -->
 
     <!-- ====== View Modal ====== -->
     <div id="view-modal" class="modal fade" tabindex="-1">
@@ -196,7 +169,7 @@
     <div id="preloader"></div>
     <script src="libs/jquery/jquery-3.5.1.min.js"></script>
     <script src="libs/bootstrap/js/bootstrap.min.js"></script>
-    <script src="js/script.min.js"></script>
+    <script src="js/script.js"></script>
 </body>
 
 </html>
