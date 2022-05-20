@@ -79,6 +79,14 @@
 
 @media only screen and (max-width: 576px) {
     .table tbody {
-        max-height: calc(100vh - 21em);
+        max-height: calc(100vh - 23em);
+    }
+
+    #filter-form {
+        width: 60%;
+    }
+
+    #filter-form div {
+        margin-bottom: 0.5em;
     }
 }

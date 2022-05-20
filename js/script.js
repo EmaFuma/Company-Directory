@@ -102,7 +102,7 @@ $(document).ready(function () {
       const employee = $("#filter-input").val();
       const department = $("#department-filter").val();
       const location = $("#location-filter").val();
-      clearTimeout(delay);
+      clearTimeout(delay); //this line stop querys to queue up as the user type
 
       delay = setTimeout(function () {
         getFilterPersonnel(employee, department, location);
@@ -406,7 +406,7 @@ function deleteModal(type, id) {
 
 function filter() {
   let content = ` 
-    <div class="row">
+    <div class="row mb-0">
       <div class="col-sm-4">
         <input type="text" class="form-control" id="filter-input" placeholder="Employee">
       </div>
