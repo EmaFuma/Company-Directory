@@ -30,7 +30,7 @@ $(document).ready(function () {
   getAllLocations();
   filter();
   filterByInput();
-  $(".company-tabs").html("Personnel");
+  $("#company-tabs").html("Personnel");
 
 
   // TABS
@@ -44,7 +44,7 @@ $(document).ready(function () {
     $(this).addClass("active");
     resetForm("add");
     resetForm("edit");
-    $(".company-tabs").html("Personnel");
+    $("#company-tabs").html("Personnel");
   });
 
   // display department table on department tab click
@@ -57,7 +57,7 @@ $(document).ready(function () {
     $(this).addClass("active");
     resetForm("add");
     resetForm("edit");
-    $(".company-tabs").html("Departments");
+    $("#company-tabs").html("Departments");
   });
 
   // display location table on location tab click
@@ -70,7 +70,7 @@ $(document).ready(function () {
     $(this).addClass("active");
     resetForm("add");
     resetForm("edit");
-    $(".company-tabs").html("Locations");
+    $("#company-tabs").html("Locations");
   });
 
   // REFRESH BUTTON
@@ -425,7 +425,6 @@ function filter() {
     </div>`;
   $("#filter-form").html(content);
 }
-
 // ----------------------------------------------------------------------------CREATE SCRIPT-----------------------------------------------------------------------------
 
 function addRecord(type) {
