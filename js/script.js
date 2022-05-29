@@ -240,7 +240,7 @@ function displayAlert(displayId, status, message) {
 
 function displayCheck(displayId) {
   $(`#${displayId}-alert`).html(`
-    <h6 class="mb-3">Are you sure you wish to delete department?</h6>
+    <h6 class="mb-3">Are you sure you wish to delete record?</h6>
     <button id="delete-modal-yes" class="btn btn-success">Yes</button>
     <button id="delete-modal-no" class="btn btn-danger" data-dismiss="modal">No</button>`);
 }
