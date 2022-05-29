@@ -30,7 +30,12 @@
 
 	}
 
-	$query = 'SELECT * FROM personnel ORDER BY firstName';
+	$query = "SELECT p.id, p.lastName, p.firstName, p.jobTitle, p.email, 
+                d.name as department, l.name as location 
+                FROM personnel p 
+                LEFT JOIN department d ON (p.departmentID = d.id) 
+                LEFT JOIN location l ON (d.locationID = l.id)
+                ORDER BY lastName";
 
 	$result = $conn->query($query);
 	

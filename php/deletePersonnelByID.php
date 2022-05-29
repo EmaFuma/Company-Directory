@@ -1,6 +1,5 @@
 <?php
 
-	
 	ini_set('display_errors', 'On');
 	error_reporting(E_ALL);
 
@@ -28,7 +27,6 @@
 
 	}	
 
-	// $_REQUEST used for development / debugging. Remember to cange to $_POST for production
 	$employeeId = $_REQUEST['employeeId'];
 
 	$query = 'DELETE FROM personnel WHERE id = ' . $employeeId;

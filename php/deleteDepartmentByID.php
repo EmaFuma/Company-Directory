@@ -1,7 +1,5 @@
 <?php
 
-	
-	
 	ini_set('display_errors', 'On');
 	error_reporting(E_ALL);
 
@@ -27,31 +25,17 @@
 
 		exit;
 
-	}
-		
-	$departmentId = $_REQUEST['departmentId'];
+	}	
 
-	$checkQuery = "SELECT COUNT(firstName) as employees FROM personnel p WHERE p.departmentID = $departmentId";
+	$query = 'DELETE FROM department WHERE id = ' . $_REQUEST['departmentId'];
 
-	$checkResult = $conn->query($checkQuery);
-
-	$data = [];
-
-	while ($row = mysqli_fetch_assoc($checkResult)) {
-
-		array_push($data, $row);
-
-	}
-
+	$result = $conn->query($query);
 	
-
-	$personnel = $data[0]['employees'];
-
-	if ($personnel > 0) {
+	if (!$result) {
 
 		$output['status']['code'] = "400";
 		$output['status']['name'] = "executed";
-		$output['status']['description'] = "Delete denied. Remove assigned personnel before deleting.";	
+		$output['status']['description'] = "query failed";	
 		$output['data'] = [];
 
 		mysqli_close($conn);
@@ -59,13 +43,9 @@
 		echo json_encode($output); 
 
 		exit;
+
 	}
-	
 
-	$query = 'DELETE FROM department WHERE id = ' . $_REQUEST['departmentId'];
-
-	$result = $conn->query($query);
-	
 	$output['status']['code'] = "200";
 	$output['status']['name'] = "ok";
 	$output['status']['description'] = "Succesfully Deleted";

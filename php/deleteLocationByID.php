@@ -1,7 +1,5 @@
 <?php
 
-	
-	
 	ini_set('display_errors', 'On');
 	error_reporting(E_ALL);
 
@@ -29,28 +27,15 @@
 
 	}	
 
+	$query = 'DELETE FROM location WHERE id = ' . $_REQUEST['locationId'];
+
+	$result = $conn->query($query);
 	
-	$locationId = $_REQUEST['locationId'];
-
-	$checkQuery = "SELECT COUNT(name) as departments FROM department d WHERE d.locationID = $locationId";
-    
-	$checkResult = $conn->query($checkQuery);
-
-	$data = [];
-
-	while ($row = mysqli_fetch_assoc($checkResult)) {
-
-		array_push($data, $row);
-
-	}
-
-	$departments = $data[0]['departments'];
-
-	if ($departments > 0) {
+	if (!$result) {
 
 		$output['status']['code'] = "400";
 		$output['status']['name'] = "executed";
-		$output['status']['description'] = "Delete denied. Remove assigned departments before deleting.";	
+		$output['status']['description'] = "query failed";	
 		$output['data'] = [];
 
 		mysqli_close($conn);
@@ -58,13 +43,8 @@
 		echo json_encode($output); 
 
 		exit;
+
 	}
-	
-
-	$query = 'DELETE FROM location WHERE id = ' . $_REQUEST['locationId'];
-
-	$result = $conn->query($query);
-	
 
 	$output['status']['code'] = "200";
 	$output['status']['name'] = "ok";
@@ -74,6 +54,6 @@
 	
 	mysqli_close($conn);
 
-	echo json_encode($output);
+	echo json_encode($output); 
 
 ?>

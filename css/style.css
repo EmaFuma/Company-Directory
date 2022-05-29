@@ -57,7 +57,7 @@
 
 .table tbody {
     display: block;
-    max-height: calc(100vh - 14em);
+    max-height: calc(100vh - 16em);
     overflow-y: auto;
 }
 
@@ -68,8 +68,12 @@
     table-layout: fixed;
 }
 
-.table tr .id {
-    display: none;
+.table thead th {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.table td {
+    border-top: 0;
 }
 
 #department-table,
@@ -77,22 +81,17 @@
     display: none;
 }
 
-#company-tabs {
-    padding-top: .3em;
-}
-
-@media only screen and (max-width: 991.5px) {
-    #filter-form {
-        margin-top: 0.5em;
-    }
-}
-
 @media only screen and (max-width: 576px) {
+
     #filter-form {
         width: 60%;
     }
 
     #filter-form div {
-        margin-bottom: 0.5em;
+        margin-bottom: 0.2em;
+    }
+
+    .table tbody {
+        max-height: calc(100vh - 22em);
     }
 }
