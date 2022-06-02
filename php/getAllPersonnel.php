@@ -35,7 +35,7 @@
                 FROM personnel p 
                 LEFT JOIN department d ON (p.departmentID = d.id) 
                 LEFT JOIN location l ON (d.locationID = l.id)
-                ORDER BY id";
+                ORDER BY lastName";
 
 	$result = $conn->query($query);
 	

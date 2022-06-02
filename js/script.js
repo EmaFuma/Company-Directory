@@ -148,7 +148,7 @@ $(document).ready(function () {
   // EDIT FUNCTION
   // display edit modal on edit button click
   $(document).on("click", "tbody tr .edit-btn", function () {
-    let id = $(this).parent().parent().siblings().html();
+    let id = $(this).parent().parent().parent().attr("class");
     editModal(getType(), id);
   });
   // get location on department change
@@ -171,9 +171,9 @@ $(document).ready(function () {
   //DELETE FUNCTION
   // display delete modal on delete button clicked
   $(document).on("click", "tbody tr .delete-btn", function () {
-    let id = $(this).parent().parent().siblings().html();
-    let first = $(this).parent().parent().siblings().next().next().html();
-    let last = $(this).parent().parent().siblings().next().html();
+    let id = $(this).parent().parent().parent().attr("class");
+    let first = $(this).parent().parent().siblings().next().html();
+    let last = $(this).parent().parent().siblings().html();
     deleteModal(getType(), id, first, last);
   });
   // delete record on confirmation
@@ -235,14 +235,20 @@ function displayAlert(displayId, status, message) {
       `<div class="alert alert-dismissible fade show alert-success" role="alert">${message}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
     );
   }
-  $("#search-bar").val("");
+
+  if (displayId === "delete") {
+    $(`#${displayId}-footer`).hide();
+  }
 }
 
+// Deletion confirmation alert
 function displayCheck(displayId) {
   $(`#${displayId}-alert`).html(`
-    <h6 class="mb-3">Are you sure you wish to delete record?</h6>
+    <h6 class="my-2">Are you sure you wish to delete record?</h6>`);
+
+  $(`#${displayId}-footer`).html(`
     <button id="delete-modal-yes" class="btn btn-success">Yes</button>
-    <button id="delete-modal-no" class="btn btn-danger" data-dismiss="modal">No</button>`);
+    <button id="delete-modal-no" class="btn btn-danger" data-dismiss="modal">No</button>`).show();
 }
 
 // create and display options
@@ -602,7 +608,6 @@ function deleteLocation(deleteId) {
 // ----------------------------------------------------------------------------READ SCRIPT-----------------------------------------------------------------------------
 
 // get personnel from database
-
 function getAllPersonnel() {
   $.ajax({
     async: true,
@@ -614,14 +619,13 @@ function getAllPersonnel() {
       const employer = result.data;
       let content = "";
       for (let i = 0; i < employer.length; i++) {
-        content += `<tr>
-            <td class="d-none d-md-table-cell">${employer[i].id}</td>
+        content += `<tr class="${employer[i].id}">
             <td>${employer[i].lastName}</td>
             <td>${employer[i].firstName}</td>
             <td class="d-none d-md-table-cell">${employer[i].department}</td>
-            <td class="align-middle text-center py-0">
+            <td class="align-middle text-right py-0">
                 <div class="btn-group" role="group">
-                  <button class="edit-btn btn text-primary" title="edit"><i class="bi bi-eye-fill"></i></button>
+                  <button class="edit-btn btn text-primary" title="edit"><i class="bi bi-pencil-square"></i></button>
                   <button class="delete-btn btn text-danger" title="delete"><i class="bi bi-trash3-fill"></i></button>
                 </div>
               </td>
@@ -644,13 +648,12 @@ function getAllDepartments() {
       const department = result.data;
       let content = "";
       for (let i = 0; i < department.length; i++) {
-        content += `<tr>
-            <td class="d-none d-md-table-cell">${department[i].id}</td>
+        content += `<tr class="${department[i].id}">
             <td>${department[i].name}</td>
             <td class="d-none d-md-table-cell">${department[i].location}</td>
-              <td class="align-middle text-center py-0">
+              <td class="align-middle text-right py-0">
                 <div class="btn-group" role="group">
-                  <button class="edit-btn btn text-primary" title="edit"><i class="bi bi-eye-fill"></i></button>
+                  <button class="edit-btn btn text-primary" title="edit"><i class="bi bi-pencil-square"></i></button>
                   <button class="delete-btn btn text-danger" title="delete"><i class="bi bi-trash3-fill"></i></button>
                 </div>
               </td>
@@ -672,12 +675,11 @@ function getAllLocations() {
       const locations = result.data;
       let content = "";
       for (let i = 0; i < locations.length; i++) {
-        content += `<tr>
-            <td class="d-none d-md-table-cell">${locations[i].id}</td>
+        content += `<tr class="${locations[i].id}">
             <td>${locations[i].name}</td>
-              <td class="align-middle text-center py-0">
+              <td class="align-middle text-right py-0">
                 <div class="btn-group" role="group">
-                  <button class="edit-btn btn text-primary" title="edit"><i class="bi bi-eye-fill"></i></button>
+                  <button class="edit-btn btn text-primary" title="edit"><i class="bi bi-pencil-square"></i></button>
                   <button class="delete-btn btn text-danger" title="delete"><i class="bi bi-trash3-fill"></i></button>
                 </div>
               </td>
@@ -837,14 +839,13 @@ function getFilterPersonnel(emp, dep, loc) {
       const employer = result.data.personnel;
       let content = "";
       for (let i = 0; i < employer.length; i++) {
-        content += `<tr>
-            <td class="d-none d-md-table-cell">${employer[i].id}</td>
+        content += `<tr class="${employer[i].id}">
             <td>${employer[i].lastName}</td>
             <td>${employer[i].firstName}</td>
             <td class="d-none d-md-table-cell">${employer[i].department}</td>
-              <td class="align-middle text-center py-0">
+              <td class="align-middle text-right py-0">
                 <div class="btn-group" role="group">
-                  <button class="edit-btn btn text-primary" title="edit"><i class="bi bi-eye-fill"></i></button>
+                  <button class="edit-btn btn text-primary" title="edit"><i class="bi bi-pencil-square"></i></button>
                   <button class="delete-btn btn text-danger" title="delete"><i class="bi bi-trash3-fill"></i></button>
                 </div>
               </td>
