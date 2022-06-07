@@ -1,7 +1,4 @@
 <?php
-
-
-	// remove next two lines for production
 	
 	ini_set('display_errors', 'On');
 	error_reporting(E_ALL);
@@ -30,18 +27,14 @@
 
 	}	
 
-	// $_REQUEST used for development / debugging. Remember to cange to $_POST for production
-	$firstName = $_REQUEST['firstName'];
-	$lastName = $_REQUEST['lastName'];
-	$jobTitle = $_REQUEST['jobTitle'];
-	$email = $_REQUEST['email'];
-	$department = $_REQUEST['department'];
-	
-	$query = "INSERT INTO personnel (firstName, lastName, jobTitle, email, departmentID) VALUES('$firstName', '$lastName', '$jobTitle', '$email', '$department')";
 
-	$result = $conn->query($query);
+	$query = $conn->prepare('INSERT INTO personnel (firstName, lastName, jobTitle, email, departmentID) VALUES(?, ?, ?, ?, ?)');
+
+	$query->bind_param("sssss", $_REQUEST['firstName'], $_REQUEST['lastName'], $_REQUEST['jobTitle'], $_REQUEST['email'], $_REQUEST['department']);
+
+	$query->execute();
 	
-	if (!$result) {
+	if (false === $query) {
 
 		$output['status']['code'] = "400";
 		$output['status']['name'] = "executed";
@@ -58,7 +51,7 @@
 
 	$output['status']['code'] = "200";
 	$output['status']['name'] = "ok";
-	$output['status']['description'] = "$firstName $lastName successfully added";
+	$output['status']['description'] = "Successfully added";
 	$output['status']['returnedIn'] = (microtime(true) - $executionStartTime) / 1000 . " ms";
 	$output['data'] = [];
 	

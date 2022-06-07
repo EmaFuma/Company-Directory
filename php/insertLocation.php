@@ -1,9 +1,4 @@
 <?php
-
-	// example use from browser
-	// http://localhost/companydirectory/libs/php/insertDepartment.php?name=New%20Location
-
-	// remove next two lines for production
 	
 	ini_set('display_errors', 'On');
 	error_reporting(E_ALL);
@@ -32,14 +27,13 @@
 
 	}	
 
-	// $_REQUEST used for development / debugging. Remember to cange to $_POST for production
-	$location = $_REQUEST['location'];
-    
-	$query = "INSERT INTO location (name) VALUES('$location')";
+	$query = $conn->prepare('INSERT INTO location (name) VALUES(?)');
 
-	$result = $conn->query($query);
+	$query->bind_param("s", $_REQUEST['location']);
+
+	$query->execute();
 	
-	if (!$result) {
+	if (false === $query) {
 
 		$output['status']['code'] = "400";
 		$output['status']['name'] = "executed";
@@ -56,7 +50,7 @@
 
 	$output['status']['code'] = "200";
 	$output['status']['name'] = "ok";
-	$output['status']['description'] = "$location succesfully added";
+	$output['status']['description'] = "Succesfully added";
 	$output['status']['returnedIn'] = (microtime(true) - $executionStartTime) / 1000 . " ms";
 	$output['data'] = [];
 	
