@@ -235,10 +235,6 @@ function displayAlert(displayId, status, message) {
             `<div class="alert alert-dismissible fade show alert-success" role="alert">${message}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
         );
     }
-
-    if (displayId === "delete") {
-        $(`#${displayId}-footer`).hide();
-    }
 }
 
 // Deletion confirmation alert
@@ -531,7 +527,9 @@ function checkDepartment(deleteId) {
         },
         success: function (results) {
             if (results.status.code != 200) {
-                displayAlert("delete", results.status.code, results.status.description);
+                $("#delete-footer").hide();
+                $("#delete-alert").html(`<h6>${results.status.description}</h6>`);
+
             } else {
                 displayCheck("delete");
             }
@@ -575,7 +573,8 @@ function checkLocation(deleteId) {
         },
         success: function (results) {
             if (results.status.code != 200) {
-                displayAlert("delete", results.status.code, results.status.description);
+                $("#delete-footer").hide();
+                $("#delete-alert").html(`<h6>${results.status.description}</h6>`);
             } else {
                 displayCheck("delete");
             }
