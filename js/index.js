@@ -516,6 +516,7 @@ function deletePersonnel(deleteId) {
 }
 
 function checkDepartment(deleteId) {
+    $("#delete-footer").hide();
     $.ajax({
         async: true,
         global: false,
@@ -527,7 +528,6 @@ function checkDepartment(deleteId) {
         },
         success: function (results) {
             if (results.status.code != 200) {
-                $("#delete-footer").hide();
                 $("#delete-alert").html(`<h6>${results.status.description}</h6>`);
 
             } else {
@@ -562,6 +562,7 @@ function deleteDepartment(deleteId) {
 }
 
 function checkLocation(deleteId) {
+    $("#delete-footer").hide();
     $.ajax({
         async: true,
         global: false,
@@ -573,7 +574,6 @@ function checkLocation(deleteId) {
         },
         success: function (results) {
             if (results.status.code != 200) {
-                $("#delete-footer").hide();
                 $("#delete-alert").html(`<h6>${results.status.description}</h6>`);
             } else {
                 displayCheck("delete");
@@ -861,7 +861,7 @@ function getFilterPersonnel(emp, dep, loc) {
     });
 }
 
-// ----------------------------------------------------------------------------UPDATE SCRIPT-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------EDIT SCRIPT-----------------------------------------------------------------------------
 
 function editRecord(type, editId) {
     let editObj = {

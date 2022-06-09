@@ -47,7 +47,7 @@
 
 		$output['status']['code'] = "400";
 		$output['status']['name'] = "executed";
-		$output['status']['description'] = "Delete denied. Remove assigned personnel before deleting.";	
+		$output['status']['description'] = "Delete denied. Please remove assigned personnel before deleting.";	
 		$output['data'] = [];
 
 		mysqli_close($conn);
