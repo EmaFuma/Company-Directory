@@ -228,11 +228,11 @@ function resetForm(formId) {
 function displayAlert(displayId, status, message) {
     if (status != 200) {
         $(`#${displayId}-alert`).html(
-            `<div class="alert alert-dismissible fade show alert-danger" role="alert">${message}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
+            `<div class="alert alert-dismissible fade show alert-danger" role="alert">${message}</div>`
         );
     } else {
         $(`#${displayId}-alert`).html(
-            `<div class="alert alert-dismissible fade show alert-success" role="alert">${message}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
+            `<div class="alert alert-dismissible fade show alert-success" role="alert">${message}</div>`
         );
     }
 }
@@ -528,8 +528,7 @@ function checkDepartment(deleteId) {
         },
         success: function (results) {
             if (results.status.code != 200) {
-                $("#delete-alert").html(`<h6>${results.status.description}</h6>`);
-
+                displayAlert("delete", results.status.code, results.status.description);
             } else {
                 displayCheck("delete");
             }
@@ -574,7 +573,7 @@ function checkLocation(deleteId) {
         },
         success: function (results) {
             if (results.status.code != 200) {
-                $("#delete-alert").html(`<h6>${results.status.description}</h6>`);
+                displayAlert("delete", results.status.code, results.status.description);
             } else {
                 displayCheck("delete");
             }
