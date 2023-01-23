@@ -87,10 +87,6 @@
         width: 60%;
     }
 
-    #filter-form div {
-        margin-bottom: 0.2em;
-    }
-
     .table tbody {
         max-height: calc(100vh - 22em);
     }

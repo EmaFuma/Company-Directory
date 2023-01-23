@@ -19,60 +19,41 @@
 <body>
     <!-- ====== Header ====== -->
     <header>
-        <nav class="navbar navbar-dark bg-dark">
-            <a class="navbar-brand">Company Directory</a>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-info">
+            <a class="navbar-brand" href="#">Company Directory</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link active" id="personnel-btn" title="personnel" href="#">Personnel</a>
+                    <a class="nav-item nav-link" id="department-btn" title="department" href="#">Departments</a>
+                    <a class="nav-item nav-link" id="location-btn" title="location" href="#">Locations</a>
+                </div>
+            </div>
         </nav>
     </header>
-    <!-- Header End -->
+    <!-- ====== Header End ====== -->
 
     <!-- ====== Main Section ====== -->
     <main class="container">
         <div class="row" id="list">
             <div class="card" role="tabpanel" aria-labelledby="personnel-tab">
-                <div class="card-header">
-                    <form id="filter-form" class="d-flex justify-content-center">
-                        <div class="row mb-0">
-                            <div class="col-sm-4">
-                                <input type="text" class="form-control" id="filter-input" placeholder="Employee"
-                                    value="">
-                            </div>
-                            <div class="col-sm-4">
-                                <select class="form-control" id="department-filter"></select>
-                            </div>
-                            <div class="col-sm-4">
-                                <select class="form-control" id="location-filter"></select>
+                <div class="card-header d-flex justify-content-between">
+                    <form id="filter-form">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="filter-input" placeholder="Search..." value="">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-dark" type="button" id="filter-btn" data-toggle="modal"
+                                    data-target=".bd-example-modal-sm" title="filter">
+                                    <i class="bi bi-funnel-fill"></i>
+                                </button>
                             </div>
                         </div>
                     </form>
-                </div>
-                <div class="card-body pt-3">
-                    <h6 class="company-tabs text-center mb-3"></h6>
-                    <div>
-                        <table id="personnel-table" class="table table-striped mb-0">
-                            <tbody></tbody>
-                        </table>
-                        <table id="department-table" class="table table-striped mb-0">
-                            <tbody></tbody>
-                        </table>
-                        <table id="location-table" class="table table-striped mb-0">
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="card-footer text-center">
-                    <div class="btn-group" role="group">
-                        <button type="button" id="personnel-btn" class="btn btn-dark active" title="personnel">
-                            <i class="bi bi-person-fill"></i>
-                        </button>
-                        <button type="button" id="department-btn" class="btn btn-dark" title="department">
-                            <i class="bi bi-building"></i>
-                        </button>
-                        <button type="button" id="location-btn" class="btn btn-dark" title="location">
-                            <i class="bi bi-geo-alt-fill"></i>
-                        </button>
-                    </div>
                     <div class="btn-group ml-3 mr-2" role="group">
-                        <button type="button" id="add-btn" class="btn btn-primary" title="add">
+                        <button type="button" id="add-btn" class="btn btn-info" title="add">
                             <i class="bi bi-plus-circle-fill"></i>
                         </button>
                         <button type="button" id="refresh-btn" class="btn btn-dark" title="refresh">
@@ -80,6 +61,41 @@
                         </button>
                     </div>
                 </div>
+                <div class="card-body pt-3">
+                    <div>
+                        <table id="personnel-table" class="table table-striped mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Lastname</th>
+                                    <th scope="col">Firstname</th>
+                                    <th scope="col" class="d-none d-md-table-cell">Department</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <table id="department-table" class="table table-striped mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Department</th>
+                                    <th scope="col" class="d-none d-md-table-cell">Location</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <table id="location-table" class="table table-striped mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Department</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer text-center"></div>
             </div>
         </div>
     </main>
@@ -375,6 +391,33 @@
         </div>
     </div>
     <!-- Delete Modal End -->
+
+    <!-- ====== FILTER MODAL ====== -->
+
+    <div id="add-filter" class="modal fade bd-example-modal-sm" tabindex="-1">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Filter</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <select class="form-control mb-3" id="department-filter"></select>
+                    <select class="form-control" id="location-filter"></select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="filter-submit-btn btn btn-info btn-sm">
+                        Submit
+                    </button>
+                    <button type="button" class="refresh-filter btn btn-dark btn-sm">
+                        Refresh
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- ====== JS Files ====== -->
     <div id="preloader"></div>

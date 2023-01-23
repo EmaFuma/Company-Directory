@@ -30,7 +30,6 @@ $(document).ready(function () {
     getAllLocations();
     filter();
     filterByInput();
-    $(".company-tabs").html("Personnel");
 
     // TABS
     // display personnel table on personnel tab click
@@ -43,7 +42,6 @@ $(document).ready(function () {
         $(this).addClass("active");
         resetForm(`${getType()}-add`);
         resetForm(`${getType()}-edit`);
-        $(".company-tabs").html("Personnel");
     });
 
     // display department table on department tab click
@@ -56,7 +54,6 @@ $(document).ready(function () {
         $(this).addClass("active");
         resetForm(`${getType()}-add`);
         resetForm(`${getType()}-edit`);
-        $(".company-tabs").html("Departments");
     });
 
     // display location table on location tab click
@@ -69,7 +66,6 @@ $(document).ready(function () {
         $(this).addClass("active");
         resetForm(`${getType()}-add`);
         resetForm(`${getType()}-edit`);
-        $(".company-tabs").html("Locations");
     });
 
     // REFRESH BUTTON
@@ -85,7 +81,13 @@ $(document).ready(function () {
         resetForm(`${getType()}-edit`);
     });
 
-    // FILTER FUNCTION
+    // FILTER FUNCTIONS
+
+    function filter() {
+        $("#filter-input").val("");
+        $("#department-filter").html(getUniqueDepartments(0, "filter", "Departments"));
+        $("#location-filter").html(getUniqueLocations(0, "filter", "Locations"));
+    }
 
     //searchbar event listener:
     function filterByInput() {
@@ -114,12 +116,20 @@ $(document).ready(function () {
         })
     }
 
-    $(document).on("change", "#department-filter", function () {
-        filterByDepartmentOrLocation();
+    $(document).on("click", "#filter-btn", function () {
+        $("#add-filter").modal("show");
     })
 
-    $(document).on("change", "#location-filter", function () {
+    $(document).on("click", ".filter-submit-btn", function () {
         filterByDepartmentOrLocation();
+        $("#add-filter").modal("hide");
+        filter();
+        filterByInput();
+    })
+
+    $(document).on("click", ".refresh-filter", function () {
+        filter();
+        filterByInput();
     })
 
     // ADD FUNCTION
@@ -348,12 +358,6 @@ function deleteModal(type, id, first, last) {
     }
     $("#delete-alert").html(content);
     $("#delete-modal").modal("show");
-}
-
-function filter() {
-    $("#filter-input").val("");
-    $("#department-filter").html(getUniqueDepartments(0, "filter", "Departments"));
-    $("#location-filter").html(getUniqueLocations(0, "filter", "Locations"));
 }
 
 // ----------------------------------------------------------------------------CREATE SCRIPT-----------------------------------------------------------------------------
@@ -623,9 +627,9 @@ function getAllPersonnel() {
               <td>${employer[i].lastName}</td>
               <td>${employer[i].firstName}</td>
               <td class="d-none d-md-table-cell">${employer[i].department}</td>
-              <td class="align-middle text-right py-0">
+              <td class="align-middle py-0">
                   <div class="btn-group" role="group">
-                    <button class="edit-btn btn text-primary" title="edit"><i class="bi bi-pencil-square"></i></button>
+                    <button class="edit-btn btn text-info" title="edit"><i class="bi bi-pencil-square"></i></button>
                     <button class="delete-btn btn text-danger" title="delete"><i class="bi bi-trash3-fill"></i></button>
                   </div>
                 </td>
@@ -651,9 +655,9 @@ function getAllDepartments() {
                 content += `<tr class="${department[i].id}">
               <td>${department[i].name}</td>
               <td class="d-none d-md-table-cell">${department[i].location}</td>
-                <td class="align-middle text-right py-0">
+                <td class="align-middle py-0">
                   <div class="btn-group" role="group">
-                    <button class="edit-btn btn text-primary" title="edit"><i class="bi bi-pencil-square"></i></button>
+                    <button class="edit-btn btn text-info" title="edit"><i class="bi bi-pencil-square"></i></button>
                     <button class="delete-btn btn text-danger" title="delete"><i class="bi bi-trash3-fill"></i></button>
                   </div>
                 </td>
@@ -677,9 +681,9 @@ function getAllLocations() {
             for (let i = 0; i < locations.length; i++) {
                 content += `<tr class="${locations[i].id}">
               <td>${locations[i].name}</td>
-                <td class="align-middle text-right py-0">
+                <td class="align-middle py-0 pl-0">
                   <div class="btn-group" role="group">
-                    <button class="edit-btn btn text-primary" title="edit"><i class="bi bi-pencil-square"></i></button>
+                    <button class="edit-btn btn text-info" title="edit"><i class="bi bi-pencil-square"></i></button>
                     <button class="delete-btn btn text-danger" title="delete"><i class="bi bi-trash3-fill"></i></button>
                   </div>
                 </td>
@@ -843,9 +847,9 @@ function getFilterPersonnel(emp, dep, loc) {
               <td>${employer[i].lastName}</td>
               <td>${employer[i].firstName}</td>
               <td class="d-none d-md-table-cell">${employer[i].department}</td>
-                <td class="align-middle text-right py-0">
+                <td class="align-middle py-0">
                   <div class="btn-group" role="group">
-                    <button class="edit-btn btn text-primary" title="edit"><i class="bi bi-pencil-square"></i></button>
+                    <button class="edit-btn btn text-info" title="edit"><i class="bi bi-pencil-square"></i></button>
                     <button class="delete-btn btn text-danger" title="delete"><i class="bi bi-trash3-fill"></i></button>
                   </div>
                 </td>
